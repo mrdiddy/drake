@@ -113,7 +113,155 @@
 
         function playTrack(index) {
             if (index < trackList.length) {
-                audioPlayer.src = `../songs/${trackList[index]}`;
+                audioPlayer.src = `../song/${trackList[index]}`;
+                audioPlayer.play();
+            }
+        }
+
+        function skipTrack() {
+            if (currentTrackIndex < trackList.length - 1) {
+                currentTrackIndex++;
+                playTrack(currentTrackIndex);
+            }
+        }
+
+        function rewindTrack() {
+            if (currentTrackIndex > 0) {
+                currentTrackIndex--;
+                playTrack(currentTrackIndex);
+            }
+        }
+
+        audioPlayer.addEventListener('ended', skipTrack);
+        audioPlayer.addEventListener('timeupdate', updateProgressBar);
+
+        createTrackElements();
+
+        document.getElementById('playAllButton').addEventListener('click', playAllTracks);
+        document.getElementById('skipButton').addEventListener('click', skipTrack);
+        document.getElementById('rewindButton').addEventListener('click', rewindTrack);
+        progressBar.addEventListener('input', () => {
+            audioPlayer.currentTime = progressBar.value;
+        });
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AREWESTILLFRIENDS??</title>
+</head>
+<body>
+
+    <header>
+        <h1 id="nowPlaying">hello   </h1>
+    </header>
+
+    <main>
+        <section class="playlist">
+            <h2>Created... by... ultraskibidiradiation</h2>
+            <div id="trackList"></div>
+            <button id="playAllButton">Play All</button>
+            <button id="skipButton">Skip</button>
+            <button id="rewindButton">Rewind</button>
+            <div id="progressContainer">
+                <input type="range" id="progressBar" value="0" step="1" min="0">
+                <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 10100x020032130912x010101010101</p>
+    </footer>
+
+    <audio id="audioPlayer"></audio>
+
+    <script>
+        const audioPlayer = document.getElementById('audioPlayer');
+        const trackListElement = document.getElementById('trackList');
+        const progressBar = document.getElementById('progressBar');
+        const currentTimeDisplay = document.getElementById('currentTime');
+        const durationDisplay = document.getElementById('duration');
+        const nowPlaying = document.getElementById('nowPlaying');
+
+        const trackList = [
+            'DieWithASmile.mp3',
+            'Lover.mp3',
+            'Cardigan.mp3',
+            'CruelSummer.mp3',
+            'BIRDSOFAFEATHER.mp3',
+            'SailorSong.mp3',
+            'GlueSong.mp3',
+            'CryingSeason.mp3',
+            'MoonlitFloor.mp3',
+            'RealMan.mp3',
+            'TakeMeHome.mp3',
+            'Nonsense.mp3',
+            'Espresso.mp3',
+            'BedChem.mp3',
+            'PleasePleasePlease.mp3',
+            'AREWESTILLFRIENDS.mp3',
+            'AgainAndAgain.mp3',
+            'SeeYouAgain.mp3',
+            'NoticedILaughed.mp3',
+            'APT.mp3',
+            'theboyismine.mp3',
+            'YouBelongWithMe.mp3',
+            'ANightToRemember.mp3',
+            'YoureHereThatsTheThing',
+            'theperfectpair.mp3'
+        ];
+
+        let currentTrackIndex = 0;
+
+        function createTrackElements() {
+            trackList.forEach(song => {
+                const trackName = song.replace('.mp3', '');
+                const trackDiv = document.createElement('div');
+                trackDiv.classList.add('track');
+                trackDiv.innerHTML = `<span class="track-name">${trackName}</span>`;
+                trackListElement.appendChild(trackDiv);
+            });
+        }
+
+        function updateProgressBar() {
+            const { currentTime, duration } = audioPlayer;
+            progressBar.max = duration || 0;
+            progressBar.value = currentTime;
+            currentTimeDisplay.textContent = formatTime(currentTime);
+            durationDisplay.textContent = formatTime(duration);
+            nowPlaying.textContent = trackList[currentTrackIndex].replace('.mp3', '');
+
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: trackList[currentTrackIndex].replace('.mp3', ''),
+                    artist: 'Shian Adriel U.',
+                    album: '10100x020032130912x010101010101',
+                    artwork: [
+                        { src: 'https://scontent.fmnl9-1.fna.fbcdn.net/v/t39.30808-6/462937494_517135317873403_1948664123266585843_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGKJVOSu94KlRP-mskRsvR0_a8VIUdR-d_9rxUhR1H535znaFX1f0Ri-E27dxxk34aCqbDpN4_9nQfe7-tWV4Az&_nc_ohc=WHzh84XS1PMQ7kNvgG8HF6x&_nc_zt=23&_nc_ht=scontent.fmnl9-1.fna&_nc_gid=AZ84rkpe4RHBYnBDEW4w8RQ&oh=00_AYD3oskCCg50-f0ttnso0PdE752KeFrlmF9WgsXKkyMEzw&oe=67264757', sizes: '96x96', type: 'image/png' },
+                        { src: 'https://scontent.fmnl9-1.fna.fbcdn.net/v/t39.30808-6/462937494_517135317873403_1948664123266585843_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGKJVOSu94KlRP-mskRsvR0_a8VIUdR-d_9rxUhR1H535znaFX1f0Ri-E27dxxk34aCqbDpN4_9nQfe7-tWV4Az&_nc_ohc=WHzh84XS1PMQ7kNvgG8HF6x&_nc_zt=23&_nc_ht=scontent.fmnl9-1.fna&_nc_gid=AZ84rkpe4RHBYnBDEW4w8RQ&oh=00_AYD3oskCCg50-f0ttnso0PdE752KeFrlmF9WgsXKkyMEzw&oe=67264757', sizes: '192x192', type: 'image/png' },
+                        { src: 'https://scontent.fmnl9-1.fna.fbcdn.net/v/t39.30808-6/462937494_517135317873403_1948664123266585843_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGKJVOSu94KlRP-mskRsvR0_a8VIUdR-d_9rxUhR1H535znaFX1f0Ri-E27dxxk34aCqbDpN4_9nQfe7-tWV4Az&_nc_ohc=WHzh84XS1PMQ7kNvgG8HF6x&_nc_zt=23&_nc_ht=scontent.fmnl9-1.fna&_nc_gid=AZ84rkpe4RHBYnBDEW4w8RQ&oh=00_AYD3oskCCg50-f0ttnso0PdE752KeFrlmF9WgsXKkyMEzw&oe=67264757', sizes: '512x512', type: 'image/png' }
+                    ]
+                });
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? '0' + secs : secs}`;
+        }
+
+        function playAllTracks() {
+            playTrack(currentTrackIndex);
+        }
+
+        function playTrack(index) {
+            if (index < trackList.length) {
+                audioPlayer.src = `../song/${trackList[index]}`;
                 audioPlayer.play();
             }
         }
